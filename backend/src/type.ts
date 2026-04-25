@@ -18,3 +18,5 @@ export const Nurseries = [
 type NurseryRaw = {
     [K in (typeof Nurseries)[number]]: string | number | null
 }
+
+export type Bounds = [[number, number], [number, number]];

@@ -14,3 +14,5 @@ export type Nursery = {
     "lat": number;
     "lng": number;
 };
+
+export type Bounds = [[number, number], [number, number]];

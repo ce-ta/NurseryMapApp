@@ -1,6 +1,7 @@
 import express from "express"
 import cors from "cors"
 import data from "./data/data.json"
+import { cityBounds } from './data/coordinate'
 import { convertRows } from "./services"
 import { Nurseries } from "./type"
 
@@ -12,6 +13,10 @@ app.use(express.json())
 app.get("/nurseries", (req, res) => {
     const result = convertRows(Nurseries, data.records)
     res.json(result)
+})
+
+app.get("/bounds", (req, res) => {
+    res.json(cityBounds)
 })
 
 app.listen(3000, () => {
