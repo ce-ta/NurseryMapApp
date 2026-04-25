@@ -1,14 +1,18 @@
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
-import { getNurseryList } from '../services/mapview'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
+import { getNurseryList, getCityBounds } from '../services/mapview'
 import { useEffect, useState } from 'react'
-import type { Nursery } from "../type/type"
+import type { Nursery, Bounds } from "../type/type"
+import LeftSidebar from "./LeftSidebar"
 
 export const MapView = () => {
   const [nurseries, setNurseries] = useState<Nursery[]>([]);
-  const japanBounds: [[number, number], [number, number]] = [
-    [20.0, 122.0],  // 南西
-    [46.0, 154.0],  // 北東
+  const [bound, setBound] = useState<Record<string, Bounds>>({})
+  const japanBounds: Bounds = [
+    [20.0, 122.0],
+    [46.0, 154.0],
   ];
+  const [selectedBounds, setSelectedBounds] =
+    useState<Bounds | null>(null);
 
   function formatDateTime(iso: string): string {
     const date = new Date(iso);
@@ -43,26 +47,43 @@ export const MapView = () => {
     return <h3><a href="https://catalog.data.metro.tokyo.lg.jp/survey" target="_blank">{name}</a></h3>
   }
 
+  const FitBounds = ({ bounds }: { bounds: Bounds | null }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (bounds) {
+        map.fitBounds(bounds);
+      }
+    }, [bounds, map]);
+
+    return null;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const data = await getNurseryList();
       setNurseries(data);
+
+      const bounds = await getCityBounds();
+      setBound(bounds);
     }
     fetchData();
-  });
+  }, []);
 
   return (
-    <div>
+    <div className="map-wrapper">
+      <LeftSidebar bound={bound} setSelectedBounds={setSelectedBounds} />
       <MapContainer
         center={[35.6565735, 139.6867123]}
         maxBounds={japanBounds}
         maxBoundsViscosity={1.0}
-        zoom={13}
+        zoom={15}
         style={{ height: "100vh" }}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
+        <FitBounds bounds={selectedBounds} />
 
         {nurseries.map((n) => (
           <Marker key={n.id} position={[n.lat, n.lng]}>
