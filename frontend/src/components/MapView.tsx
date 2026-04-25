@@ -1,4 +1,5 @@
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import { getNurseryList } from '../services/mapview'
 
 const nurseries = [
   {
@@ -16,9 +17,10 @@ const nurseries = [
 ]
 
 export const MapView = () => {
+  const data = getNurseryList();
   return (
     <MapContainer
-      center={[35.4478, 139.6425]}
+      center={[35.6565735, 139.6867123]}
       zoom={13}
       style={{ height: "100vh", width: "100%" }}
     >
