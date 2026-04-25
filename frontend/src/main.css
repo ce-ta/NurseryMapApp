@@ -1,0 +1,11 @@
+.tooltip {
+    width: 300px;
+    margin: 20px;
+    text-align: start;
+    pointer-events: auto;
+}
+
+.pointInTime {
+    margin-top: 10px;
+    text-align: end;
+}
